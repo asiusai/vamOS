@@ -90,6 +90,20 @@ with `DRAGON_DOCK_USB2_HUB` and `DRAGON_DOCK_USB3_HUB`. The host tool assigns
 `192.168.42.50/24` directly when a new random NCM MAC prevents the network
 manager from reusing its previous connection.
 
+## Dragon hardware policy
+
+`vamos-hardware` owns Dragon-specific IRQ routing, GPU clocks and runtime power,
+thermal trip overrides, and diagnostic device permissions. Openpilot calls
+`sudo vamos-hardware initialize` from its hardware initialization hook and
+`sudo vamos-hardware gpu-power-save on|off` when its power state changes. The
+helper has no Openpilot Python dependency, and the same interface is available
+to other workloads.
+
+Initialization retains the existing Dragon policy; it does not run a second
+time from a boot service. Openpilot still decides when to enter power save and
+retains its existing CPU policy. Install a system image containing this helper
+before updating to an Openpilot revision that delegates these operations to it.
+
 ## Dragon NPU
 
 The Dragon image includes the pinned QCS6490 cDSP firmware userspace, FastRPC
